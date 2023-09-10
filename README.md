@@ -41,7 +41,7 @@ python test.py
 For Input text "peduncle.fruit." and input test image 
 
 <div align="center">
-<img src="multimodal-data/test_images/test_pepper.jpg" width=500 height=300>
+<img src="multimodal-data/test_images/test_pepper.jpg" width=600 height=400>
 </div> 
 
 
@@ -49,14 +49,14 @@ For Input text "peduncle.fruit." and input test image
 
 
 <div align="center">
-<img src="vis_results/initial_results.jpg" width=500 height=300>
+<img src="vis_results/initial_results.jpg" width=600 height=400>
 </div> 
 
 Intially model detects the wring category and does not detect peduncle (green part) of the fruits
 
 ## After Fine-tuning
 <div align="center">
-<img src="vis_results/finetune_results.jpg" width=500 height=300>
+<img src="vis_results/finetune_results.jpg" width=600 height=400>
 </div> 
 
 After fine tuning the model can detect the right category of objects with high confidence and detect all parts of fruits as mentioned in text.
