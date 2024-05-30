@@ -34,7 +34,7 @@ python test.py
 
 1. Currently Support only one image allow batching 
 2. Add model evaluations
-3. We did not added auxilary losses as mentioned in the original paper, as we feel we are just finetuning an already trained model but feel free to add auxilary losses and compare results
+3. We did not added auxilary losses as mentioned in the original paper, as we feel we are just finetuning an already trained model but feel free to add auxillary losses and compare results
 
 ## Visual Results
 
@@ -52,7 +52,7 @@ For Input text "peduncle.fruit." and input test image
 <img src="vis_results/initial_results.jpg" width=500 height=400>
 </div> 
 
-Intially model detects the wring category and does not detect peduncle (green part) of the fruits
+Intially model detects the wrong category and does not detect peduncle (green part) of the fruits
 
 ## After Fine-tuning
 <div align="center">
