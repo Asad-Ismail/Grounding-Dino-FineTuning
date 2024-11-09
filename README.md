@@ -16,6 +16,12 @@ by introducing the capability to train the model with image-to-text grounding. T
 ## Installation:
 See original Repo for installation of required dependencies essentially we need to install prerequisits  
 
+pip install -r reqirements.txt
+
+then install the this package
+
+pip install -e .
+
 ## Train: 
 
 1. Prepare your dataset with images and associated textual captions. A tiny dataset is given multimodal-data to demonstrate the expected data format.
