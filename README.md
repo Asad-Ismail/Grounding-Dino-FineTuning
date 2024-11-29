@@ -8,9 +8,12 @@ by introducing the capability to train the model with image-to-text grounding. T
 ## Features:
 
 - **Fine-tuning DINO**: This extension works allows you to fine-tune DINO on your custom dataset.
-- **Bounding Box Regression**: Uses Generalized IoU and Smooth L1 loss for improved bounding box prediction.
-- **Position-aware Logit Losses**: The model not only learns to detect objects but also their positions in the captions.
-- **NMS**: We also implemented phrase based NMS to remove redundant boxes of same objects
+* **Hungarian Matcher**: Hungarian matching between predictions and ground truth as per original paper 
+* **EMA Model**: Exponential Moving Average model to retain pre-trained knowledge
+* **Flexible LR Scheduling**: Supports Step and Onecycle LR schedulers
+* **Example Dataset**: Includes small sample dataset for training and testing
+- **NMS (Optional)**: We also implemented phrase based NMS to remove redundant boxes of same objects (might be useful if you have too many detections original DETR like model which grouding dino is also based on donot require NMS)
+
 
 
 ## Installation:
@@ -21,6 +24,10 @@ pip install -r reqirements.txt
 then install the this package
 
 pip install -e .
+
+## Dataset
+
+Dataset is a subset of fashion dataset availbale in hugging face with categories bag, shirt and pant e.t.c. A random subset of only 200 images are selected for training containing only three categoreis, also random 50 images containing these three categories are choosen for test images, you can get the sample dataset from here [GoogleDrive](https://drive.google.com/file/d/1D2qphEE98Dloo3fUURRnsxaIRw076ZXX/view?usp=drive_link) 
 
 ## Train: 
 
@@ -36,37 +43,48 @@ Visualize results of training on test images
 python test.py
 ```
 
-## Known Limitations/TO DO:
 
-1. Currently Support only one image allow batching 
-2. Add model evaluations
-3. We did not added auxilary losses as mentioned in the original paper, as we feel we are just finetuning an already trained model but feel free to add auxillary losses and compare results
+## Qualitative Results
 
-## Visual Results
-
-For Input text "peduncle.fruit." and input test image 
-
-<div align="center">
-<img src="multimodal-data/test_images/test_pepper.png" width=500 height=340>
-</div> 
+For Input text "shirt. pants. bag" and input validation images (see above like for train and valiadtion data. The model was only trained on 200 images and tested on 50 images) 
 
 
-## Before Fine-tuning
+**Before Fine-tuning**: Model performs as shown on left. GT is shown in green and model predictions are shown in red. Interesting to know that for this dataset model does not perform very bad since but the concept of e.g "shirt" is different then the GT see second and third image 
+
+**After Fine-tuning**: Model correctly detects all required categories image one along with the correct concept of shirt
+
 
 
 <div align="center">
-<img src="vis_results/initial_results.png" width=500 height=340>
-</div> 
+ <p float="left" align="middle">
+   <img src="vis_results/before_train_0.jpg" width="300" height="400"/>
+   <img src="vis_results/after_train_0.jpg" width="300" height="400"/>
+ </p>
+</div>
 
-Intially model detects the wrong category and does not detect peduncle (green part) of the fruits
-
-## After Fine-tuning
 <div align="center">
-<img src="vis_results/finetune_results.png" width=500 height=340>
-</div> 
+ <p float="left" align="middle">
+   <img src="vis_results/before_train_1.jpg" width="300" height="300"/>
+   <img src="vis_results/after_train_1.jpg" width="300" height="300"/>
+ </p>
+</div>
 
-After fine tuning the model can detect the right category of objects with high confidence and detect all parts of fruits as mentioned in text.
+<div align="center">
+ <p float="left" align="middle">
+   <img src="vis_results/before_train_2.jpg" width="300" height="300"/>
+   <img src="vis_results/after_train_2.jpg" width="300" height="300"/>
+ </p>
+</div>
+
+
 
 
 ## Contributing
 Feel free to open issues, suggest improvements, or submit pull requests. If you found this repository useful, consider giving it a star to make it more visible to others!
+
+TO DO:
+
+1. Add model evaluation
+2. Add LORA for finetuning so model can retrain its original open vocabulary capaciry,
+3. We did not added auxilary losses as mentioned in the original paper, as we feel we are just finetuning an already trained model but feel free to add auxillary losses and compare results
+
