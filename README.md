@@ -8,9 +8,7 @@ by introducing the capability to train the model with image-to-text grounding. T
 ## Features:
 
 - **Fine-tuning DINO**: This extension works allows you to fine-tune DINO on your custom dataset.
-* **Hungarian Matcher**: Hungarian matching between predictions and ground truth as per original paper 
-* **EMA Model**: Exponential Moving Average model to retain pre-trained knowledge
-* **Flexible LR Scheduling**: Supports Step and Onecycle LR schedulers
+- **EMA Model**: Exponential Moving Average model to retain pre-trained knowledge
 * **Example Dataset**: Includes small sample dataset for training and testing
 - **NMS (Optional)**: We also implemented phrase based NMS to remove redundant boxes of same objects (might be useful if you have too many detections original DETR like model which grouding dino is also based on donot require NMS)
 
