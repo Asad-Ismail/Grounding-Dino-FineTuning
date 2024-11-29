@@ -19,15 +19,31 @@ by introducing the capability to train the model with image-to-text grounding. T
 ## Installation:
 See original Repo for installation of required dependencies essentially we need to install prerequisits  
 
+```bash
 pip install -r reqirements.txt
-
+```
 then install the this package
-
+```bash
 pip install -e .
+```
+
+Optional/DEBUG:
+You might need to do this if you have an old gpu or if its arch is not recognized automatically
+
+```bash
+
+pip uninstall groundingdino
+nvidia-smi --query-gpu=gpu_name,compute_cap --format=csv
+export TORCH_CUDA_ARCH_LIST="6.0;6.1;7.0;7.5;8.0;8.6" (add your gpu arch given from previous)
+export FORCE_CUDA=1
+pip install -e .
+
+```
+
 
 ## Dataset
 
-Dataset is a subset of fashion dataset availbale in hugging face with categories bag, shirt and pant e.t.c. A random subset of only 200 images are selected for training containing only three categoreis, also random 50 images containing these three categories are choosen for test images, you can get the sample dataset from here [GoogleDrive](https://drive.google.com/file/d/1D2qphEE98Dloo3fUURRnsxaIRw076ZXX/view?usp=drive_link) 
+Dataset is a subset of fashion dataset availbale in hugging face with categories bag, shirt and pant e.t.c. A random subset of 200 images are selected for training containing three categoreis, also random 50 images containing these three categories are choosen for test images, you can get the sample dataset from here [GoogleDrive](https://drive.google.com/file/d/1D2qphEE98Dloo3fUURRnsxaIRw076ZXX/view?usp=drive_link) and put it inside multimodal-data to use data as it is.
 
 ## Train: 
 
@@ -49,9 +65,9 @@ python test.py
 For Input text "shirt. pants. bag" and input validation images (see above like for train and valiadtion data. The model was only trained on 200 images and tested on 50 images) 
 
 
-**Before Fine-tuning**: Model performs as shown on left. GT is shown in green and model predictions are shown in red. Interesting to know that for this dataset model does not perform very bad since but the concept of e.g "shirt" is different then the GT see second and third image 
+**Before Fine-tuning**: Model performs as shown on left below. GT is shown in green and model predictions are shown in red. Interesting to note is that for this dataset model does not perform very bad, but the concept of some categories is different e.g "shirt" is different then the GT see second and third image. 
 
-**After Fine-tuning**: Model correctly detects all required categories image one along with the correct concept of shirt
+**After Fine-tuning**: Model correctly detects all required categories image one along with the correct concept.
 
 
 
