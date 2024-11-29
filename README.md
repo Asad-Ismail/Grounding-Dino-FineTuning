@@ -27,7 +27,7 @@ then install the this package
 pip install -e .
 ```
 
-Optional/DEBUG:
+Optional:
 You might need to do this if you have an old gpu or if its arch is not recognized automatically
 
 ```bash
@@ -103,4 +103,3 @@ TO DO:
 1. Add model evaluation
 2. Add LORA for finetuning so model can retrain its original open vocabulary capaciry,
 3. We did not added auxilary losses as mentioned in the original paper, as we feel we are just finetuning an already trained model but feel free to add auxillary losses and compare results
-
