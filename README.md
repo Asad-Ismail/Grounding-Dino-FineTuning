@@ -29,7 +29,8 @@ Optional:
 You might need to do this if you have an old gpu or if its arch is not recognized automatically
 
 ```bash
-
+## See if the CUDA_HOME is set up correctly
+## e.g export CUDA_HOME=/usr/local/cuda
 pip uninstall groundingdino
 nvidia-smi --query-gpu=gpu_name,compute_cap --format=csv
 export TORCH_CUDA_ARCH_LIST="6.0;6.1;7.0;7.5;8.0;8.6" (add your gpu arch given from previous)
