@@ -9,6 +9,7 @@ by introducing the capability to train the model with image-to-text grounding. T
 
 - **Fine-tuning DINO**: This extension works allows you to fine-tune DINO on your custom dataset.
 - **EMA Model**: Exponential Moving Average model to retain pre-trained knowledge
+- **LORA Training** (New) : Parameter-efficient fine-tuning using LORA that trains less than 2% of parameters while maintaining performance
 * **Example Dataset**: Includes small sample dataset for training and testing
 - **NMS (Optional)**: We also implemented phrase based NMS to remove redundant boxes of same objects (might be useful if you have too many detections original DETR like model which grouding dino is also based on donot require NMS)
 
@@ -100,5 +101,6 @@ Feel free to open issues, suggest improvements, or submit pull requests. If you 
 TO DO:
 
 1. Add model evaluation
-2. Add LORA for finetuning so model can retrain its original open vocabulary capaciry,
+2. ~~Add LORA for finetuning y~~✅
 3. We did not added auxilary losses as mentioned in the original paper, as we feel we are just finetuning an already trained model but feel free to add auxillary losses and compare results
+4. Add methods to avoid catastropihic forgetting of original model while fine tuning
