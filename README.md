@@ -9,7 +9,7 @@ by introducing the capability to train the model with image-to-text grounding. T
 
 - **Fine-tuning DINO**: This extension works allows you to fine-tune DINO on your custom dataset.
 - **EMA Model**: Exponential Moving Average model to retain pre-trained knowledge
-- **LORA Training** (New) : Parameter-efficient fine-tuning using LORA that trains less than 2% of parameters while maintaining performance
+- **LORA Training** (New) : Parameter-efficient fine-tuning using LORA that trains less than 2% of parameters while maintaining performance. For example we use a rank of 32 for the LORA adapters you can aso try smaller ranks. **LoRA only saves the newly introduced parameters, significantly reducing the storage space required for fine-tuned models. During inference, these LoRA parameters are merged with the base model weights.**
 * **Example Dataset**: Includes small sample dataset for training and testing
 - **NMS (Optional)**: We also implemented phrase based NMS to remove redundant boxes of same objects (might be useful if you have too many detections original DETR like model which grouding dino is also based on donot require NMS)
 
@@ -48,13 +48,15 @@ Dataset is a subset of fashion dataset availbale in hugging face with categories
 ## Train: 
 
 1. Prepare your dataset with images and associated textual captions. A tiny dataset is given multimodal-data to demonstrate the expected data format.
-3. Run the train.py for training.
+2. Run the train.py for training. We use a batch size of 8, a learning rate of 1e-5, and the AdamW optimizer. The model is trained for 100 epochs. **See `configs/train_config.yaml` for detailed training configurations.**
+
   ```
   python train.py
   ```
 
 ## Test:
-Visualize results of training on test images
+Visualize results of training on test images. **See `configs/test_config.yaml` for detailed testing configurations.**
+
 ```
 python test.py
 ```
