@@ -61,6 +61,11 @@ class GroundingDINODataset(Dataset):
         # Get candidates that are not in positive categories
         candidates = [cat for cat in self.all_categories if cat not in positive_categories]
         
+        # Handle case where there are no candidates
+        if not candidates:
+            # If no candidates, return empty list or duplicate some categories
+            return []
+        
         # Sample negative categories
         if len(candidates) >= num_negative:
             negative_categories = random.sample(candidates, num_negative)
