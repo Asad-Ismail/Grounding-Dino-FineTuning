@@ -5,6 +5,7 @@ data:
   val_ann: "multimodal-data/fashion_dataset_subset/val_annotations.csv"
   batch_size: 4
   num_workers: 8
+  negative_sampling_rate: 1.0
 
 model:
   config_path: "groundingdino/config/GroundingDINO_SwinT_OGC.py"

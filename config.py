@@ -11,6 +11,7 @@ class DataConfig:
     val_ann: str
     num_workers: int = 8
     batch_size: int = 4
+    negative_sampling_rate: float = 0.0  # New parameter for negative sampling
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'DataConfig':
@@ -20,7 +21,8 @@ class DataConfig:
             val_dir=str(data['val_dir']),
             val_ann=str(data['val_ann']),
             num_workers=int(data.get('num_workers', 8)),
-            batch_size=int(data.get('batch_size', 4))
+            batch_size=int(data.get('batch_size', 4)),
+            negative_sampling_rate=float(data.get('negative_sampling_rate', 0.0))
         )
 
 @dataclass

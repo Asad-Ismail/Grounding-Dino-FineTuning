@@ -35,12 +35,14 @@ def setup_data_loaders(config: DataConfig) -> tuple[DataLoader, DataLoader]:
 
     train_dataset = GroundingDINODataset(
         config.train_dir,
-        config.train_ann
+        config.train_ann,
+        negative_sampling_rate=config.negative_sampling_rate
     )
     
     val_dataset = GroundingDINODataset(
         config.val_dir,
-        config.val_ann
+        config.val_ann,
+        negative_sampling_rate=0.0  # No negative sampling for validation
     )
     
     train_loader = DataLoader(
@@ -164,7 +166,8 @@ class GroundingDINOTrainer:
             target['boxes']=target['boxes'].to(self.device)
             target['size']=target['size'].to(self.device)
             target['labels']=target['labels'].to(self.device)
-            captions.append(target['caption'])
+            # Use all_categories (positive + negative) for the caption
+            captions.append(target.get('all_categories', target['caption']))
             
         return images, targets, captions
 

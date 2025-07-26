@@ -66,6 +66,7 @@ class HungarianMatcher(nn.Module):
             #t_boxes = box_xyxy_to_cxcywh(t["boxes"]) / scale_fct
             t_boxes = t["boxes"] / scale_fct
             tgt_boxes_list.append(t_boxes)
+            # Use str_cls_lst for positive categories only, even if all_categories contains negatives
             token_span=[t['cat2tokenspan'][cls] for cls in t['str_cls_lst']]
             token_spans.append(token_span)
             
@@ -105,7 +106,6 @@ class HungarianMatcher(nn.Module):
         return [(torch.as_tensor(i, dtype=torch.int64), torch.as_tensor(j, dtype=torch.int64)) for i, j in indices], tgt_labels
 
 
-
 class FirstNMatcher(nn.Module):
     def __init__(self):
         super().__init__()
@@ -117,6 +117,7 @@ class FirstNMatcher(nn.Module):
 
         token_spans=[]
         for t in targets:
+            # Use str_cls_lst for positive categories only, even if all_categories contains negatives
             token_span=[t['cat2tokenspan'][cls] for cls in t['str_cls_lst']]
             token_spans.append(token_span)
             
