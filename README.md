@@ -58,8 +58,9 @@ Dataset is a subset of fashion dataset availbale in hugging face with categories
 
 For multi-GPU training, we provide `train_multigpu.py` which uses HuggingFace Accelerate:
 
-```
-accelerate launch train_accelerate.py configs/train_config.yaml
+```bash
+## Install accelerate
+pip install accelerate
 ```
 
 Accelerate can be configured for different setups. You can also configure Accelerate interactively:
@@ -80,12 +81,12 @@ Multi-GPU Configuration (e.g., 2 GPUs):
 ```yaml
 compute_environment: LOCAL_MACHINE
 distributed_type: MULTI_GPU
-num_processes: 2
 ```
 
 Then run with:
-```
-accelerate launch --config_file accelerate_config.yaml train_accelerate.py configs/train_config.yaml
+
+```bash
+accelerate launch train_accelerate.py configs/train_config.yaml
 ```
 
 ## Test:
