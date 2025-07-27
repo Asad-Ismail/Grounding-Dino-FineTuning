@@ -17,10 +17,6 @@ from groundingdino.util.slconfig import SLConfig
 from groundingdino.util.utils import get_phrases_from_posmap
 from groundingdino.util.lora import add_lora_to_model
 
-# ----------------------------------------------------------------------------------------------------------------------
-# OLD API
-# ----------------------------------------------------------------------------------------------------------------------
-
 
 def focal_loss(logits, targets, alpha=0.25, gamma=2, eps=1e-7):
     logits = logits.clamp(min=-50, max=50)  # Clamp logits

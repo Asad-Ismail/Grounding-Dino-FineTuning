@@ -19,3 +19,5 @@ training:
   warmup_epochs: 5
   use_lora: true
   visualization_frequency: 5
+  use_gradient_clipping: true
+  max_grad_norm: 5.0

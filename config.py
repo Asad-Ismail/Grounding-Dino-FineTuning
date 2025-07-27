@@ -48,6 +48,8 @@ class TrainingConfig:
     warmup_epochs: int = 5
     use_lora: bool = False
     visualization_frequency: int = 5
+    use_gradient_clipping: bool = True
+    max_grad_norm: float = 5.0
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'TrainingConfig':
@@ -58,7 +60,9 @@ class TrainingConfig:
             save_frequency=int(data.get('save_frequency', 100)),
             warmup_epochs=int(data.get('warmup_epochs', 5)),
             use_lora=bool(data.get('use_lora', False)),
-            visualization_frequency=int(data.get('visualization_frequency', 5))
+            visualization_frequency=int(data.get('visualization_frequency', 5)),
+            use_gradient_clipping=bool(data.get('use_gradient_clipping', True)),
+            max_grad_norm=float(data.get('max_grad_norm', 5.0))
         )
 
 class ConfigurationManager:

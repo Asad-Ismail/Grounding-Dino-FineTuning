@@ -8,7 +8,7 @@ from groundingdino.util.train import load_image
 from groundingdino.util.vl_utils import build_captions_and_token_span
 
 class GroundingDINODataset(Dataset):
-    def __init__(self, img_dir, ann_file, transforms=None, negative_sampling_rate=0.0):
+    def __init__(self, img_dir, ann_file, transforms=None, negative_sampling_rate=0.0,add_extra_classes=False):
         """
         Args:
             img_dir (str): Path to image directory
@@ -27,6 +27,9 @@ class GroundingDINODataset(Dataset):
         for img_path in self.annotations:
             self.all_categories.update(self.annotations[img_path]['phrases'])
         self.all_categories = list(self.all_categories)
+        if add_extra_classes:
+            extra_classes = ['person', 'cat', 'dog']
+            self.all_categories.extend(extra_classes)
 
     def read_dataset(self, img_dir, ann_file):
         """
