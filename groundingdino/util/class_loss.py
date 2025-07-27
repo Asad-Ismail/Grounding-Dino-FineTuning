@@ -21,8 +21,6 @@ class BCEWithLogitsLoss(ClassificationLoss):
             valid_mask: [bs, num_queries, num_classes]
         """
         # Find matched queries (any target > 0 along class dimension)
-
-
         matched_queries = (targets.sum(dim=-1) > 0)  # [bs, num_queries]
         
         total_loss = torch.tensor(0.0, device=preds.device)
@@ -56,7 +54,7 @@ class BCEWithLogitsLoss(ClassificationLoss):
             # Apply both masks
             total_mask = unmatched_mask & text_mask
 
-            unmatched_queries = (~matched_queries > 0).sum() 
+            unmatched_queries = (~matched_queries).sum() 
 
             #print(unmatched_queries)
 
@@ -67,7 +65,8 @@ class BCEWithLogitsLoss(ClassificationLoss):
                 torch.zeros_like(unmatched_preds),
                 reduction='sum'
             ) 
-            #unmatched_loss/=unmatched_queries
+            if unmatched_queries > 0:
+                unmatched_loss/=unmatched_queries
             unmatched_loss*= self.eos_coef
 
             total_loss += unmatched_loss
@@ -116,7 +115,6 @@ class MultilabelFocalLoss(ClassificationLoss):
                 
                 total_loss += loss.sum() / max(num_valid, 1)
         
-        '''
         # Unmatched queries loss
         if (~matched_queries).any():
             unmatched_preds = preds[~matched_queries]      # [num_unmatched, num_classes]
@@ -140,9 +138,8 @@ class MultilabelFocalLoss(ClassificationLoss):
                 loss = alpha_t * loss
                 
                 total_loss += self.eos_coef * loss.sum() / max(num_valid, 1)
-        '''
+        
         return total_loss
-
 
 
 class FocalLoss(ClassificationLoss):

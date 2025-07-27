@@ -35,12 +35,15 @@ def setup_data_loaders(config: DataConfig) -> tuple[DataLoader, DataLoader]:
 
     train_dataset = GroundingDINODataset(
         config.train_dir,
-        config.train_ann
+        config.train_ann,
+        negative_sampling_rate=config.negative_sampling_rate,
+        add_extra_classes=True
     )
     
     val_dataset = GroundingDINODataset(
         config.val_dir,
-        config.val_ann
+        config.val_ann,
+        negative_sampling_rate=0.0  # No negative sampling for validation
     )
     
     train_loader = DataLoader(
@@ -81,7 +84,9 @@ class GroundingDINOTrainer:
         lr_scheduler="onecycle",
         eos_coef=0.1,
         max_txt_len=256,
-        use_lora=False
+        use_lora=False,
+        use_gradient_clipping=True,
+        max_grad_norm=5.0
     ):
         self.model = model.to(device)
         self.device = device
@@ -151,6 +156,8 @@ class GroundingDINOTrainer:
         self.weights_dict_loss = {'loss_ce': class_loss_coef, 'loss_bbox': bbox_loss_coef*2, 'loss_giou': giou_loss_coef}
         self.criterion = SetCriterion(max_txt_len, self.matcher, eos_coef, losses)
         self.criterion.to(device)
+        self.use_gradient_clipping = use_gradient_clipping
+        self.max_grad_norm = max_grad_norm
 
     def prepare_batch(self, batch):
         images, targets = batch
@@ -164,6 +171,7 @@ class GroundingDINOTrainer:
             target['boxes']=target['boxes'].to(self.device)
             target['size']=target['size'].to(self.device)
             target['labels']=target['labels'].to(self.device)
+            # Use caption (already processed string) for the caption
             captions.append(target['caption'])
             
         return images, targets, captions
@@ -181,8 +189,11 @@ class GroundingDINOTrainer:
         ## backward pass
         total_loss.backward()
         loss_dict['total_loss']=total_loss
-        #total_norm = torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=20.0)
-        #print(f"Gradient norm: {total_norm:.4f}")
+        if self.use_gradient_clipping:
+            total_norm = torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=self.max_grad_norm)
+            #print(f"Gradient norm: {total_norm:.4f}")
+        else:
+            total_norm = None
         self.optimizer.step()
         
         # Step scheduler if it exists
@@ -230,7 +241,6 @@ class GroundingDINOTrainer:
         """Save checkpoint with EMA and scheduler state""" 
         if use_lora:
             lora_state_dict = get_peft_model_state_dict(self.model)
-            print(lora_state_dict)
             checkpoint = {
             'epoch': epoch,
             'model': lora_state_dict,
@@ -300,7 +310,9 @@ def train(config_path: str, save_dir: Optional[str] = None) -> None:
         num_epochs=training_config.num_epochs,
         warmup_epochs=training_config.warmup_epochs,
         learning_rate=training_config.learning_rate,
-        use_lora=training_config.use_lora
+        use_lora=training_config.use_lora,
+        use_gradient_clipping=training_config.use_gradient_clipping,
+        max_grad_norm=training_config.max_grad_norm
     )   
     # Training loop
     for epoch in range(training_config.num_epochs):
@@ -319,7 +331,6 @@ def train(config_path: str, save_dir: Optional[str] = None) -> None:
                 loss_str = ", ".join(f"{k}: {v:.4f}" for k, v in losses.items())
                 print(f"Epoch {epoch+1}/{training_config.num_epochs}, "
                       f"Batch {batch_idx}/{len(train_loader)}, {loss_str}")
-                print(f"Learning rate: {trainer.optimizer.param_groups[0]['lr']:.6f}")
 
         avg_losses = {k: sum(v)/len(v) for k, v in epoch_losses.items()}
         print(f"Epoch {epoch+1} complete. Average losses:",

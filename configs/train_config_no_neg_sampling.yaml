@@ -5,7 +5,7 @@ data:
   val_ann: "multimodal-data/fashion_dataset_subset/val_annotations.csv"
   batch_size: 4
   num_workers: 8
-  negative_sampling_rate: 1.0
+  negative_sampling_rate: 0.0  # No negative sampling
 
 model:
   config_path: "groundingdino/config/GroundingDINO_SwinT_OGC.py"
@@ -19,5 +19,3 @@ training:
   warmup_epochs: 5
   use_lora: true
   visualization_frequency: 5
-  use_gradient_clipping: true
-  max_grad_norm: 5.0
