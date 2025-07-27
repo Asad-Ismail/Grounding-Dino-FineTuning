@@ -11,6 +11,7 @@ from train import setup_model, setup_data_loaders, GroundingDINOVisualizer, free
 
 def train_accelerate(config_path: str, save_dir: str = None) -> None:
     accelerator = Accelerator()
+    device = accelerator.device
     data_config, model_config, training_config = ConfigurationManager.load_config(config_path)
 
     model = setup_model(model_config, training_config.use_lora)
@@ -64,15 +65,31 @@ def train_accelerate(config_path: str, save_dir: str = None) -> None:
     trainer.model = model
     trainer.optimizer = optimizer
 
+    def prepare_batch_with_device(batch, device):
+        images, targets = batch
+        # Convert list of images to NestedTensor and move to device
+        if isinstance(images, (list, tuple)):
+            from groundingdino.util.misc import nested_tensor_from_tensor_list
+            images = nested_tensor_from_tensor_list(images)  # Convert list to NestedTensor
+        images = images.to(device)
+        
+        captions = []
+        for target in targets:
+            target['boxes'] = target['boxes'].to(device)
+            target['size'] = target['size'].to(device)
+            target['labels'] = target['labels'].to(device)
+            captions.append(target['caption'])
+        return images, targets, captions
+
     for epoch in range(training_config.num_epochs):
         if accelerator.is_main_process and epoch % training_config.visualization_frequency == 0:
-            visualizer.visualize_epoch(model, val_loader, epoch, trainer.prepare_batch, box_th=0.3, txt_th=0.2)
+            visualizer.visualize_epoch(model, val_loader, epoch, lambda batch: prepare_batch_with_device(batch, device), box_th=0.3, txt_th=0.2)
 
         epoch_losses = defaultdict(list)
         for batch_idx, batch in enumerate(train_loader):
             trainer.model.train()
             trainer.optimizer.zero_grad()
-            images, targets, captions = trainer.prepare_batch(batch)
+            images, targets, captions = prepare_batch_with_device(batch, device)
             outputs = trainer.model(images, captions=captions)
             loss_dict = trainer.criterion(outputs, targets, captions=captions, tokenizer=trainer.model.tokenizer)
             total_loss = sum(loss_dict[k] * trainer.weights_dict_loss[k] for k in loss_dict.keys() if k in trainer.weights_dict_loss)

@@ -54,13 +54,46 @@ Dataset is a subset of fashion dataset availbale in hugging face with categories
   python train.py
   ```
 
+### Multi-GPU Training with Accelerate:
+
+For multi-GPU training, we provide `train_multigpu.py` which uses HuggingFace Accelerate:
+
+```
+accelerate launch train_accelerate.py configs/train_config.yaml
+```
+
+Accelerate can be configured for different setups. You can also configure Accelerate interactively:
+
+```
+accelerate config
+```
+
+Some example configutrations are: 
+
+Single GPU Configuration:
+```yaml
+compute_environment: LOCAL_MACHINE
+distributed_type: NO
+```
+
+Multi-GPU Configuration (e.g., 2 GPUs):
+```yaml
+compute_environment: LOCAL_MACHINE
+distributed_type: MULTI_GPU
+num_processes: 2
+```
+
+Then run with:
+```
+accelerate launch --config_file accelerate_config.yaml train_accelerate.py configs/train_config.yaml
+```
+
 ## Test:
 Visualize results of training on test images. **See `configs/test_config.yaml` for detailed testing configurations.**
 
 ```
 python test.py
 ```
-
 
 ## Qualitative Results
 
@@ -105,4 +138,3 @@ TO DO:
 1. Add model evaluation
 2. ~~Add LORA for finetuning y~~✅
 3. We did not added auxilary losses as mentioned in the original paper, as we feel we are just finetuning an already trained model but feel free to add auxillary losses and compare results
-4. Add methods to avoid catastropihic forgetting of original model while fine tuning
